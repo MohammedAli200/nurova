@@ -1,0 +1,315 @@
+/* ==========================================================================
+   Claymorphism Design System Tokens & Utility Classes for Nurova
+   Color Ratios:
+   - 60% Sand: #F8EBDD (Background, Base surfaces)
+   - 25% Warm Beige: #E2D0B5 (Containers, Clay cards, Neutral surfaces)
+   - 10% Forest: #355C45 (Primary brand, Headings, Primary CTA, Verified badges)
+   - 5%  Burst Orange: #C9784B (Highlights, Secondary CTA, Alert badges, Accents)
+   Typography:
+   - Primary: 'Georama', sans-serif
+   - Secondary (Highlights): 'Bitcount Single', 'Space Mono', monospace
+   ========================================================================== */
+
+:root {
+  /* Color Palette */
+  --sand-base: #F8EBDD;
+  --sand-light: #FFF7EE;
+  --sand-dark: #EDE0D0;
+  
+  --warm-beige: #E2D0B5;
+  --warm-beige-light: #EFE2CD;
+  --warm-beige-dark: #D4BE9F;
+  --warm-beige-shadow: rgba(188, 163, 131, 0.45);
+  --warm-beige-highlight: rgba(255, 255, 255, 0.85);
+
+  --forest-primary: #355C45;
+  --forest-dark: #264332;
+  --forest-light: #4A7A5D;
+  --forest-soft: rgba(53, 92, 69, 0.12);
+  --forest-shadow: rgba(38, 67, 50, 0.4);
+
+  --burst-orange: #C9784B;
+  --burst-orange-dark: #B06439;
+  --burst-orange-light: #DE8F63;
+  --burst-orange-soft: rgba(201, 120, 75, 0.15);
+  --burst-orange-shadow: rgba(176, 100, 57, 0.4);
+
+  --text-dark: #2B2621;
+  --text-muted: #6B6259;
+  --text-light: #9B9185;
+  
+  /* Fonts */
+  --font-primary: 'Georama', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-highlight: 'Bitcount Single', 'Space Mono', monospace;
+
+  /* Clay Shadows - Multi-layered for realistic 3D tactile inflation */
+  --clay-card-shadow: 
+    12px 16px 28px rgba(196, 172, 142, 0.4),
+    -10px -10px 24px rgba(255, 255, 255, 0.9),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.7),
+    inset -3px -3px 6px rgba(188, 163, 131, 0.3);
+
+  --clay-card-deep: 
+    16px 22px 36px rgba(180, 155, 125, 0.45),
+    -12px -12px 28px rgba(255, 255, 255, 0.95),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.8),
+    inset -4px -4px 8px rgba(170, 145, 115, 0.35);
+
+  --clay-button-forest:
+    8px 10px 20px rgba(53, 92, 69, 0.35),
+    -4px -4px 12px rgba(255, 255, 255, 0.6),
+    inset 2px 2px 4px rgba(100, 160, 125, 0.6),
+    inset -3px -3px 5px rgba(25, 45, 33, 0.5);
+
+  --clay-button-orange:
+    8px 10px 20px rgba(201, 120, 75, 0.35),
+    -4px -4px 12px rgba(255, 255, 255, 0.6),
+    inset 2px 2px 4px rgba(240, 170, 130, 0.6),
+    inset -3px -3px 5px rgba(140, 70, 35, 0.5);
+
+  --clay-button-beige:
+    8px 12px 20px rgba(196, 172, 142, 0.4),
+    -6px -6px 14px rgba(255, 255, 255, 0.9),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+    inset -2px -2px 4px rgba(180, 155, 125, 0.3);
+
+  --clay-inset-recessed:
+    inset 5px 5px 10px rgba(188, 163, 131, 0.35),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8),
+    1px 1px 3px rgba(255, 255, 255, 0.5);
+
+  --clay-badge-shadow:
+    4px 6px 12px rgba(196, 172, 142, 0.3),
+    -3px -3px 8px rgba(255, 255, 255, 0.8),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.6),
+    inset -1px -1px 2px rgba(180, 155, 125, 0.25);
+}
+
+/* Clay Card Base */
+.clay-card {
+  background: var(--warm-beige);
+  border-radius: 28px;
+  box-shadow: var(--clay-card-shadow);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clay-card:hover {
+  box-shadow: var(--clay-card-deep);
+  transform: translateY(-2px);
+}
+
+.clay-card-sand {
+  background: var(--sand-light);
+  border-radius: 28px;
+  box-shadow: var(--clay-card-shadow);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+/* Clay Recessed Container / Input Well */
+.clay-inset {
+  background: #F3E4D2;
+  box-shadow: var(--clay-inset-recessed);
+  border-radius: 18px;
+  border: 1px solid rgba(212, 190, 159, 0.5);
+  transition: all 0.2s ease;
+}
+
+.clay-inset:focus-within {
+  border-color: var(--forest-primary);
+  box-shadow: 
+    inset 4px 4px 8px rgba(53, 92, 69, 0.2),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.9),
+    0 0 0 3px var(--forest-soft);
+}
+
+/* Clay Buttons */
+.clay-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 20px;
+  padding: 14px 28px;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clay-btn:active {
+  transform: scale(0.97) translateY(2px);
+}
+
+.clay-btn-forest {
+  background: linear-gradient(135deg, var(--forest-light) 0%, var(--forest-primary) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--clay-button-forest);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+}
+
+.clay-btn-forest:hover {
+  background: linear-gradient(135deg, #568F6D 0%, var(--forest-primary) 100%);
+  box-shadow: 10px 14px 24px rgba(53, 92, 69, 0.45), -4px -4px 12px rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.clay-btn-forest:active {
+  box-shadow: inset 4px 4px 8px rgba(15, 30, 20, 0.7), inset -2px -2px 5px rgba(255, 255, 255, 0.2);
+  transform: scale(0.97) translateY(2px);
+}
+
+.clay-btn-orange {
+  background: linear-gradient(135deg, var(--burst-orange-light) 0%, var(--burst-orange) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--clay-button-orange);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.clay-btn-orange:hover {
+  background: linear-gradient(135deg, #E69D74 0%, var(--burst-orange) 100%);
+  box-shadow: 10px 14px 24px rgba(201, 120, 75, 0.45), -4px -4px 12px rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.clay-btn-orange:active {
+  box-shadow: inset 4px 4px 8px rgba(120, 50, 20, 0.7), inset -2px -2px 5px rgba(255, 255, 255, 0.2);
+  transform: scale(0.97) translateY(2px);
+}
+
+.clay-btn-beige {
+  background: linear-gradient(135deg, var(--warm-beige-light) 0%, var(--warm-beige) 100%);
+  color: var(--text-dark);
+  box-shadow: var(--clay-button-beige);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+}
+
+.clay-btn-beige:hover {
+  box-shadow: 10px 14px 24px rgba(196, 172, 142, 0.5), -6px -6px 16px rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.clay-btn-beige:active {
+  box-shadow: inset 3px 3px 6px rgba(170, 145, 115, 0.5), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+  transform: scale(0.97) translateY(2px);
+}
+
+/* Clay Badges (Secondary Font Highlights) */
+.clay-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-family: var(--font-highlight);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: var(--clay-badge-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  user-select: none;
+}
+
+.clay-badge-forest {
+  background: linear-gradient(135deg, #447357 0%, var(--forest-primary) 100%);
+  color: #FFFFFF;
+}
+
+.clay-badge-orange {
+  background: linear-gradient(135deg, var(--burst-orange-light) 0%, var(--burst-orange) 100%);
+  color: #FFFFFF;
+}
+
+.clay-badge-beige {
+  background: #EADBC5;
+  color: var(--forest-primary);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.clay-badge-sand {
+  background: var(--sand-light);
+  color: var(--text-dark);
+  border: 1px solid rgba(212, 190, 159, 0.4);
+}
+
+/* Floating Soft Clay Orb Accents */
+.clay-floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  z-index: 0;
+  transition: transform 0.6s ease;
+}
+
+/* Clay Segmented Role Switcher */
+.clay-segment-wrapper {
+  display: flex;
+  background: #E8D8C3;
+  padding: 6px;
+  border-radius: 24px;
+  box-shadow: var(--clay-inset-recessed);
+  gap: 6px;
+}
+
+.clay-segment-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clay-segment-item.active {
+  background: var(--forest-primary);
+  color: #FFFFFF;
+  box-shadow: var(--clay-button-forest);
+}
+
+.clay-segment-item.active-orange {
+  background: var(--burst-orange);
+  color: #FFFFFF;
+  box-shadow: var(--clay-button-orange);
+}
+
+/* Micro-animations */
+@keyframes clayFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+.clay-float-slow {
+  animation: clayFloat 6s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 16px rgba(201, 120, 75, 0.6);
+  }
+}
+
+.pulse-badge {
+  animation: pulseGlow 2.5s infinite;
+}
