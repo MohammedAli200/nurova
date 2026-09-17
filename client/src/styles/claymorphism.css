@@ -1,3 +1,483 @@
+<<<<<<< HEAD
+/* =========================================================================
+   NUROVA CLAYMORPHISM DESIGN SYSTEM
+   Palette: 60% Sand (#F3EBDD), 25% Warm Beige (#E2D0B5), 10% Forest (#355C45), 5% Burnt Orange (#C9784B)
+   Typography: Primary "Georama", Accent "Bitcount Prop Single"
+   ========================================================================= */
+
+:root {
+  --sand: #f3ebdd;
+  --sand-light: #faf5ee;
+  --warm-beige: #e2d0b5;
+  --warm-beige-light: #ece3d3;
+  --forest: #355c45;
+  --forest-dark: #233e2f;
+  --forest-light: #467558;
+  --burnt-orange: #c9784b;
+  --burnt-orange-dark: #ad5f35;
+  --burnt-orange-light: #e5976e;
+
+  --font-primary: "Georama", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-accent: "Bitcount Prop Single", "VT323", monospace;
+}
+
+/* Base Body Styles */
+body {
+  background-color: var(--sand);
+  color: var(--forest);
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Global Selection */
+::selection {
+  background-color: var(--burnt-orange);
+  color: #ffffff;
+}
+
+/* Smooth Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sand);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfbe9e;
+  border-radius: 9999px;
+  border: 2px solid var(--sand);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bda681;
+}
+
+/* =========================================================================
+   Claymorphic Surface Levels
+   ========================================================================= */
+
+/* Level 1: Subtle recessed container (inputs, wells, tag chips, inset cards) */
+.clay-surface-1,
+.clay-inset-well {
+  background: var(--warm-beige);
+  border-radius: 20px;
+  box-shadow:
+    inset 3px 3px 6px rgba(53, 92, 69, 0.11),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.clay-inset-well:focus-within {
+  box-shadow:
+    inset 3px 3px 6px rgba(53, 92, 69, 0.15),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.95),
+    0 0 0 3px rgba(53, 92, 69, 0.2);
+  border-color: var(--forest);
+}
+
+/* Level 2: Standard tactile card */
+.clay-surface-2,
+.clay-card {
+  background: var(--warm-beige);
+  border-radius: 28px;
+  box-shadow:
+    8px 10px 24px rgba(53, 92, 69, 0.09),
+    -8px -8px 20px rgba(255, 255, 255, 0.85),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.clay-card-interactive {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.clay-card-interactive:hover {
+  transform: translateY(-4px) scale(1.008);
+  box-shadow:
+    12px 16px 30px rgba(53, 92, 69, 0.14),
+    -10px -10px 24px rgba(255, 255, 255, 0.95),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.75);
+}
+
+/* Level 3: Elevated hero / Modal */
+.clay-surface-3,
+.clay-modal-surface {
+  background: var(--warm-beige);
+  border-radius: 32px;
+  box-shadow:
+    16px 20px 40px rgba(53, 92, 69, 0.16),
+    -12px -12px 32px rgba(255, 255, 255, 0.95),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+/* =========================================================================
+   Tactile Clay Buttons
+   ========================================================================= */
+
+/* Forest Primary Button (10% dominant action) */
+.clay-btn-forest {
+  background: linear-gradient(145deg, #3d684f, #2b4b38);
+  color: #f3ebdd;
+  border-radius: 18px;
+  box-shadow:
+    5px 6px 14px rgba(53, 92, 69, 0.28),
+    -4px -4px 10px rgba(255, 255, 255, 0.7),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
+}
+
+.clay-btn-forest:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    7px 9px 20px rgba(53, 92, 69, 0.36),
+    -5px -5px 12px rgba(255, 255, 255, 0.85),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+.clay-btn-forest:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    inset 3px 3px 6px rgba(18, 34, 25, 0.5),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.15);
+}
+
+/* Burnt Orange Accent Button (5% highlight) */
+.clay-btn-orange {
+  background: linear-gradient(145deg, #d88354, #b56437);
+  color: #ffffff;
+  border-radius: 18px;
+  box-shadow:
+    5px 6px 14px rgba(201, 120, 75, 0.32),
+    -4px -4px 10px rgba(255, 255, 255, 0.7),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
+}
+
+.clay-btn-orange:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    7px 9px 20px rgba(201, 120, 75, 0.42),
+    -5px -5px 12px rgba(255, 255, 255, 0.85),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.45);
+}
+
+.clay-btn-orange:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    inset 3px 3px 6px rgba(110, 48, 18, 0.45),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.2);
+}
+
+/* Warm Beige Subtle / Secondary Button */
+.clay-btn-beige {
+  background: var(--warm-beige);
+  color: var(--forest);
+  border-radius: 18px;
+  box-shadow:
+    4px 5px 12px rgba(53, 92, 69, 0.10),
+    -4px -4px 10px rgba(255, 255, 255, 0.8),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+}
+
+.clay-btn-beige:hover:not(:disabled) {
+  transform: translateY(-2px);
+  color: var(--burnt-orange);
+  box-shadow:
+    6px 8px 18px rgba(53, 92, 69, 0.15),
+    -5px -5px 12px rgba(255, 255, 255, 0.9),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.85);
+}
+
+.clay-btn-beige:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    inset 3px 3px 6px rgba(53, 92, 69, 0.14),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.7);
+}
+
+/* Success / Approve Button */
+.clay-btn-success {
+  background: linear-gradient(145deg, #38644b, #284c37);
+  color: #f3ebdd;
+  border-radius: 18px;
+  box-shadow:
+    4px 5px 12px rgba(53, 92, 69, 0.25),
+    -3px -3px 8px rgba(255, 255, 255, 0.7),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.clay-btn-success:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    6px 8px 18px rgba(53, 92, 69, 0.34),
+    -4px -4px 10px rgba(255, 255, 255, 0.85);
+}
+
+.clay-btn-success:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    inset 3px 3px 6px rgba(18, 34, 25, 0.45);
+}
+
+/* Danger / Reject Button */
+.clay-btn-danger {
+  background: linear-gradient(145deg, #cf6f43, #b0572e);
+  color: #ffffff;
+  border-radius: 18px;
+  box-shadow:
+    4px 5px 12px rgba(201, 120, 75, 0.3),
+    -3px -3px 8px rgba(255, 255, 255, 0.7),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.clay-btn-danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    6px 8px 18px rgba(201, 120, 75, 0.40),
+    -4px -4px 10px rgba(255, 255, 255, 0.85);
+}
+
+.clay-btn-danger:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    inset 3px 3px 6px rgba(110, 48, 18, 0.45);
+}
+
+/* Segmented Pill Active / Inactive States */
+.clay-pill-active {
+  background: var(--forest);
+  color: #f3ebdd;
+  box-shadow:
+    4px 4px 10px rgba(53, 92, 69, 0.25),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.25);
+}
+
+.clay-pill-inactive {
+  background: transparent;
+  color: var(--forest);
+}
+
+.clay-pill-inactive:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* =========================================================================
+   Keyframe Animations
+   ========================================================================= */
+
+@keyframes pageEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatSlow1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(25px, -20px) scale(1.05);
+  }
+}
+
+@keyframes floatSlow2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-20px, 25px) scale(0.95);
+  }
+}
+
+@keyframes floatSlow3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(15px, 18px) scale(1.04);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%) scale(0.9);
+  }
+}
+
+@keyframes scalePop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.82;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes shakeError {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+/* =========================================================================
+   Animation Utility Classes
+   ========================================================================= */
+
+.animate-page-entrance {
+  animation: pageEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-modal-in {
+  animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-toast-in {
+  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-toast-out {
+  animation: toastSlideOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-pop {
+  animation: scalePop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
+}
+
+.animate-shake-error {
+  animation: shakeError 0.35s ease-in-out;
+}
+
+.animate-blob-1 {
+  animation: floatSlow1 12s ease-in-out infinite;
+}
+
+.animate-blob-2 {
+  animation: floatSlow2 15s ease-in-out infinite;
+}
+
+.animate-blob-3 {
+  animation: floatSlow3 18s ease-in-out infinite;
+}
+
+.clay-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 208, 181, 0.5) 0%,
+    rgba(243, 235, 221, 0.85) 50%,
+    rgba(226, 208, 181, 0.5) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite ease-in-out;
+}
+
+/* Stagger Entrance Helpers */
+.stagger-1 { animation-delay: 40ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 120ms; }
+.stagger-4 { animation-delay: 160ms; }
+.stagger-5 { animation-delay: 200ms; }
+
+/* =========================================================================
+   Accessibility: Reduced Motion
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-blob-1,
+  .animate-blob-2,
+  .animate-blob-3,
+  .animate-pulse-subtle,
+  .clay-skeleton-shimmer {
+    animation: none !important;
+  }
+}
+=======
 /* ==========================================================================
    Claymorphism Design System Tokens & Utility Classes for Nurova
    Color Ratios:
@@ -313,3 +793,4 @@
 .pulse-badge {
   animation: pulseGlow 2.5s infinite;
 }
+>>>>>>> origin/feature/module-a-farha-backend-new

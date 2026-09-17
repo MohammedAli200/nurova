@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-sand text-forest font-georama;
+    margin: 0;
+  }
+
+  button, input, textarea, select {
+    font-family: inherit;
+  }
+}

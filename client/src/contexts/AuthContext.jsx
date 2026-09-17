@@ -1,10 +1,90 @@
+<<<<<<< HEAD
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
+
+import { getMe } from "../modules/auth/services/authService";
+=======
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { storage } from '../utils/storage';
 import { ROLES, VERIFICATION_STATUSES } from '../config/constants';
+>>>>>>> origin/feature/module-a-farha-backend-new
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
+<<<<<<< HEAD
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            setLoading(false);
+            return;
+        }
+
+        const loadUser = async () => {
+            try {
+                const result = await getMe();
+                setUser(result.user);
+            } catch (error) {
+                console.error(
+                    "Failed to restore authentication:",
+                    error
+                );
+
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadUser();
+    }, []);
+
+    const login = (token, userData) => {
+        localStorage.setItem("token", token);
+        localStorage.setItem(
+            "user",
+            JSON.stringify(userData)
+        );
+
+        setUser(userData);
+    };
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        setUser(null);
+    };
+
+    return (
+        <AuthContext.Provider
+            value={{
+                user,
+                loading,
+                login,
+                logout,
+                isAuthenticated: !!user,
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+export const useAuth = () => {
+    return useContext(AuthContext);
+};
+=======
   const [currentUser, setCurrentUser] = useState(() => storage.getCurrentUser());
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
@@ -227,3 +307,4 @@ export const useAuth = () => {
   }
   return context;
 };
+>>>>>>> origin/feature/module-a-farha-backend-new
