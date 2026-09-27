@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from "react";
 import { CheckCircle2, Clock, XCircle, Sparkles, ShieldCheck } from "lucide-react";
 
@@ -7,9 +6,9 @@ import { CheckCircle2, Clock, XCircle, Sparkles, ShieldCheck } from "lucide-reac
  * Tactile status indicator pill with distinct colors, micro-animations, and inset/elevated shadows.
  */
 const ClayBadge = ({
-    status = "neutral", // "pending" | "approved" | "rejected" | "forest" | "orange" | "neutral"
+    status = "neutral",
     children,
-    size = "md", // "sm" | "md"
+    size = "md",
     showDot = true,
     showIcon = false,
     className = "",
@@ -75,7 +74,8 @@ const ClayBadge = ({
 
     const current = statusMap[normalizedStatus] || statusMap.neutral;
     const Icon = current.icon;
-    const sizeClasses = size === "sm" ? "px-2.5 py-1 text-[11px]" : "px-3.5 py-1.5 text-xs";
+    const sizeClasses =
+        size === "sm" ? "px-2.5 py-1 text-[11px]" : "px-3.5 py-1.5 text-xs";
 
     return (
         <span
@@ -87,56 +87,19 @@ const ClayBadge = ({
                 ${className}
             `}
         >
-            {showIcon && Icon && <Icon className="w-3 h-3 flex-shrink-0" />}
-            {showDot && !showIcon && (
-                <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${current.dot}`} />
+            {showIcon && Icon && (
+                <Icon className="w-3 h-3 flex-shrink-0" />
             )}
+
+            {showDot && !showIcon && (
+                <span
+                    className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${current.dot}`}
+                />
+            )}
+
             <span>{children || current.label}</span>
         </span>
     );
 };
 
 export default ClayBadge;
-
-=======
-import React from 'react';
-
-/**
- * ClayBadge - Highlight Pill Badge with Bitcount Single style highlight typography
- * @param {'forest' | 'orange' | 'beige' | 'sand'} variant
- */
-export const ClayBadge = ({
-  children,
-  variant = 'forest',
-  icon: Icon,
-  className = '',
-  style = {},
-  pulse = false,
-  ...props
-}) => {
-  const getVariantClass = () => {
-    switch (variant) {
-      case 'orange':
-        return 'clay-badge-orange';
-      case 'beige':
-        return 'clay-badge-beige';
-      case 'sand':
-        return 'clay-badge-sand';
-      case 'forest':
-      default:
-        return 'clay-badge-forest';
-    }
-  };
-
-  return (
-    <span
-      className={`clay-badge ${getVariantClass()} ${pulse ? 'pulse-badge' : ''} ${className}`}
-      style={style}
-      {...props}
-    >
-      {Icon && <Icon size={13} style={{ strokeWidth: 2.5 }} />}
-      {children}
-    </span>
-  );
-};
->>>>>>> origin/feature/module-a-farha-backend-new
