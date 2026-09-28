@@ -223,6 +223,12 @@ const UserNavbar = () => {
                     >
                         <Calendar className="w-4 h-4" />
                         <span>My Bookings</span>
+                        <Link
+                          to="/marketplace"
+                         className={isActive("/marketplace") ? "text-forest font-semibold" : ""}
+                        >
+                              Marketplace
+                           </Link>
                     </Link>
 
                     <Link
