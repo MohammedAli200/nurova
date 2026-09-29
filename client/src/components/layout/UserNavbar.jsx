@@ -221,18 +221,18 @@ const UserNavbar = () => {
                                 : "text-forest/80 hover:text-forest hover:bg-white/40"
                         }`}
                     >
-                        <Calendar className="w-4 h-4" />
+                         <Calendar className="w-4 h-4" />
                         <span>My Bookings</span>
-                        <Link
-                          to="/marketplace"
-                         className={isActive("/marketplace") ? "text-forest font-semibold" : ""}
-                        >
-                              Marketplace
-                           </Link>
                     </Link>
 
                     <Link
-                        to="/profile"
+                        to="/marketplace"
+                        className={isActive("/marketplace") ? "text-forest font-semibold" : ""}
+                    >
+                        Marketplace
+                    </Link>
+                     <Link
+                     to="/profile"
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
                             isActive("/profile")
