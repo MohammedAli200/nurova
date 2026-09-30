@@ -35,7 +35,7 @@ const PractitionerDashboard = () => {
     const { user } = useAuth();
     const toast = useToast();
     const isApproved =
-        user?.isApproved === true || user?.approvalStatus === "approved";
+        user?.isApproved === true || user?.approvalStatus === "approved" || user?.verificationStatus === "approved";
 
     const [sessions, setSessions] = useState([]);
     const [selectedDate, setSelectedDate] = useState(() => {
@@ -198,6 +198,16 @@ const PractitionerDashboard = () => {
                                         icon={Users}
                                     >
                                         Client Bookings
+                                    </ClayButton>
+                                </Link>
+
+                                <Link to="/practitioner/products">
+                                    <ClayButton
+                                        variant="beige"
+                                        size="md"
+                                        fullWidth={false}
+                                    >
+                                        Manage Products
                                     </ClayButton>
                                 </Link>
                             </div>

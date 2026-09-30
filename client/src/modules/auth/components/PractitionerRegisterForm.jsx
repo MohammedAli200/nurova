@@ -17,12 +17,13 @@ const specializations = [
 const PractitionerRegisterForm = () => {
     const navigate = useNavigate();
 
-    const [form, setForm] = useState({
-        email: "",
-        password: "",
-        bio: "",
-        specialization: "",
-    });
+   const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    bio: "",
+    specialization: "",
+});
 
     const [document, setDocument] = useState(null);
     const [error, setError] = useState("");
@@ -38,6 +39,7 @@ const PractitionerRegisterForm = () => {
         }
 
         const data = new FormData();
+        data.append("name", form.name.trim());
         data.append("email", form.email.trim().toLowerCase());
         data.append("password", form.password);
         data.append("bio", form.bio.trim());
@@ -68,6 +70,14 @@ const PractitionerRegisterForm = () => {
                     <span>{error}</span>
                 </div>
             )}
+            <ClayInput
+            label="Full Name"
+            type="text"
+              placeholder="Enter your full name"
+             value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+             required
+            />
 
             <ClayInput
                 label="Professional Email"
