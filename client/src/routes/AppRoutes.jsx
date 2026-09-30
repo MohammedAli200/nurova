@@ -8,9 +8,11 @@ import {
 import LoginPage from "../modules/auth/pages/LoginPage";
 import RegisterPage from "../modules/auth/pages/RegisterPage";
 import ProfilePage from "../modules/auth/pages/ProfilePage";
+import MarketplacePage from "../modules/marketplace/pages/MarketplacePage";
 
 import PractitionerDashboard from "../modules/practitioner/pages/PractitionerDashboard";
 import PractitionerBookingsPage from "../modules/practitioner/pages/PractitionerBookingsPage";
+import PractitionerProductsPage from "../modules/practitioner/pages/PractitionerProductsPage";
 
 import UserDashboard from "../modules/booking/pages/UserDashboard";
 import PractitionerDiscovery from "../modules/booking/pages/PractitionerDiscovery";
@@ -88,6 +90,10 @@ const AppRoutes = () => {
                         path="/my-bookings"
                         element={<MyBookingsPage />}
                     />
+                    <Route
+                     path="/marketplace"
+                   element={<MarketplacePage />}
+                      />
 
                     {/* =====================
                         PRACTITIONER PORTAL
@@ -106,7 +112,11 @@ const AppRoutes = () => {
                             path="/practitioner/bookings"
                             element={<PractitionerBookingsPage />}
                         />
-                    </Route>
+                   </Route>
+                        <Route
+                            path="/practitioner/products"
+                            element={<PractitionerProductsPage />}
+                         />
                 </Route>
 
                 {/* =========================
