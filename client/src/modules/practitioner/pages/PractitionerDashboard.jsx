@@ -24,6 +24,7 @@ import {
     ArrowRight,
     CheckCircle2,
     XCircle,
+    ShoppingBag,
 } from "lucide-react";
 import { useToast } from "../../../contexts/ToastContext";
 import {
@@ -199,6 +200,16 @@ const PractitionerDashboard = () => {
                                     >
                                         Client Bookings
                                     </ClayButton>
+                                </Link>
+                                 <Link to="/practitioner/products">
+                                <ClayButton
+                                  variant="beige"
+                                 size="md"
+                                 fullWidth={false}
+                                 icon={ShoppingBag}
+                                 >
+                                 My Products
+                                </ClayButton>
                                 </Link>
                             </div>
                         )}
