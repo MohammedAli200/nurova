@@ -22,6 +22,7 @@ const emptyForm = {
     price: "",
     category: "",
     stock: "",
+    image: null,
 };
 
 const PractitionerProductsPage = () => {
@@ -80,6 +81,14 @@ const PractitionerProductsPage = () => {
             [name]: value,
         }));
     };
+    const handleImageChange = (event) => {
+    const file = event.target.files[0];
+
+    setForm((previous) => ({
+        ...previous,
+        image: file || null,
+    }));
+};
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -87,13 +96,14 @@ const PractitionerProductsPage = () => {
         try {
             setSaving(true);
 
-            const payload = {
-                name: form.name.trim(),
-                description: form.description.trim(),
-                price: Number(form.price),
-                category: form.category.trim(),
-                stock: Number(form.stock),
-            };
+          const payload = {
+    name: form.name.trim(),
+    description: form.description.trim(),
+    price: Number(form.price),
+    category: form.category.trim(),
+    stock: Number(form.stock),
+    image: form.image,
+};
 
             if (editingProduct) {
                 await updateProduct(editingProduct._id, payload);
@@ -288,6 +298,24 @@ const PractitionerProductsPage = () => {
                         placeholder="Describe the product"
                         required
                     />
+                    <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-forest">
+                    Product Image
+                    </label>
+
+                   <input
+                   type="file"
+                   accept="image/*"
+                   onChange={handleImageChange}
+                     className="w-full rounded-xl border border-forest/20 bg-warmBeige px-3 py-2 text-sm text-forest"
+                    />
+
+                  {form.image && (
+                   <p className="text-xs text-forest/60">
+                    Selected: {form.image.name}
+                   </p>
+                      )}
+                  </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <ClayInput

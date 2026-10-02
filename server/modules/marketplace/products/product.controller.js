@@ -56,11 +56,15 @@ const createProduct = async (req, res) => {
       });
     }
 
-    const product = await productService.createProduct(
-      req.body,
-      req.user.id
-    );
-
+  const product = await productService.createProduct(
+  {
+    ...req.body,
+    ...(req.file && {
+      image: `/uploads/${req.file.filename}`,
+    }),
+  },
+  req.user.id
+);
     res.status(201).json({
       success: true,
       message: "Product created successfully",
@@ -87,12 +91,16 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    const product = await productService.updateProduct(
-      req.params.id,
-      req.user.id,
-      req.body
-    );
-
+   const product = await productService.updateProduct(
+  req.params.id,
+  req.user.id,
+  {
+    ...req.body,
+    ...(req.file && {
+      image: `/uploads/${req.file.filename}`,
+    }),
+  }
+);
     if (!product) {
       return res.status(404).json({
         success: false,
