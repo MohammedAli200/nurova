@@ -1524,18 +1524,25 @@ export const productsData = [
 ];
 
 // Helper search & filter methods
-export const getProducts = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/products`);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch products");
-  }
+ export const getProducts = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/products`);
 
-  const result = await response.json();
+    if (!response.ok) {
+        throw new Error("Failed to fetch products");
+    }
 
-  return result.data;
+    const result = await response.json();
+
+    return (result.data || []).map((product) => ({
+        ...product,
+        image: product.image
+            ? product.image.startsWith("http")
+                ? product.image
+                : `${API_BASE_URL}${product.image}`
+            : product.image,
+    }));
 };
-
 export const getProductById = async (id) => {
   const response = await fetch(
     `${API_BASE_URL}/api/products/${id}`
