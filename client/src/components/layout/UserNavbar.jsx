@@ -96,9 +96,19 @@ const UserNavbar = () => {
                         <Calendar className="w-3.5 h-3.5" />
                         <span>My Bookings</span>
                     </Link>
-
+                       <Link
+                        to="/marketplace"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            isActive("/marketplace")
+                                ? "clay-btn-forest text-sand !transform-none"
+                                : "text-forest/80 hover:text-forest hover:bg-white/40"
+                        }`}
+                    >
+                        Marketplace
+                    </Link>
                     {user.role === "practitioner" && (
-                        <>
+                          <>
                             <Link
                                 to="/practitioner"
                                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
@@ -221,12 +231,18 @@ const UserNavbar = () => {
                                 : "text-forest/80 hover:text-forest hover:bg-white/40"
                         }`}
                     >
-                        <Calendar className="w-4 h-4" />
+                         <Calendar className="w-4 h-4" />
                         <span>My Bookings</span>
                     </Link>
 
                     <Link
-                        to="/profile"
+                        to="/marketplace"
+                        className={isActive("/marketplace") ? "text-forest font-semibold" : ""}
+                    >
+                        Marketplace
+                    </Link>
+                     <Link
+                     to="/profile"
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
                             isActive("/profile")
