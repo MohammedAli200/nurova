@@ -11,6 +11,11 @@ const {
   getMyDocuments,
 } = require("../modules/auth/practitionercontroller");
 
+const {
+  getPractitionerReviews,
+  addReview,
+} = require("../modules/community/community.controller");
+
 const router = express.Router();
 
 /*
@@ -62,5 +67,17 @@ router.get(
   roleMiddleware("practitioner"),
   getMyDocuments
 );
+
+/*
+ * Get practitioner reviews and rating aggregate
+ * GET /api/practitioners/:id/reviews
+ */
+router.get("/:id/reviews", getPractitionerReviews);
+
+/*
+ * Submit practitioner review (authenticated users)
+ * POST /api/practitioners/:id/reviews
+ */
+router.post("/:id/reviews", authMiddleware, addReview);
 
 module.exports = router;

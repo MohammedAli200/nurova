@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
-import TherapySession from "../../models/TherapySession.js";
-import Booking from "../../models/Booking.js";
-import User from "../../models/User.js";
+const mongoose = require("mongoose");
+const TherapySession = require("../../models/TherapySession");
+const Booking = require("../../models/Booking");
+const User = require("../../models/user");
 
 /**
  * Check if a practitioner is verified and approved
@@ -14,6 +14,7 @@ const verifyPractitionerApproval = async (practitionerId) => {
 
     const isApproved =
         practitioner.approvalStatus === "approved" ||
+        practitioner.verificationStatus === "approved" ||
         practitioner.isApproved === true;
 
     if (!isApproved) {
@@ -34,7 +35,7 @@ const verifyPractitionerApproval = async (practitionerId) => {
 /**
  * Schedule a new therapy session for an approved practitioner
  */
-export const createPractitionerSession = async (
+const createPractitionerSession = async (
     practitionerId,
     sessionData
 ) => {
@@ -130,7 +131,7 @@ export const createPractitionerSession = async (
 /**
  * Get all scheduled sessions for a practitioner (calendar & list)
  */
-export const getPractitionerSessions = async (practitionerId, filters = {}) => {
+const getPractitionerSessions = async (practitionerId, filters = {}) => {
     const { status, fromDate, toDate } = filters;
 
     const query = { practitioner: practitionerId };
@@ -155,7 +156,7 @@ export const getPractitionerSessions = async (practitionerId, filters = {}) => {
     const bookings = await Booking.find({
         session: { $in: sessionIds },
         status: "confirmed",
-    }).populate("user", "username email bio");
+    }).populate("user", "name username email bio");
 
     const bookingMap = new Map();
     bookings.forEach((b) => {
@@ -176,7 +177,7 @@ export const getPractitionerSessions = async (practitionerId, filters = {}) => {
 /**
  * Get all client bookings for a practitioner
  */
-export const getPractitionerBookings = async (practitionerId, filters = {}) => {
+const getPractitionerBookings = async (practitionerId, filters = {}) => {
     const { status } = filters;
 
     const query = { practitioner: practitionerId };
@@ -185,7 +186,7 @@ export const getPractitionerBookings = async (practitionerId, filters = {}) => {
     }
 
     const bookings = await Booking.find(query)
-        .populate("user", "username email bio")
+        .populate("user", "name username email bio")
         .populate("session")
         .sort({ createdAt: -1 });
 
@@ -195,7 +196,7 @@ export const getPractitionerBookings = async (practitionerId, filters = {}) => {
 /**
  * Cancel a scheduled session (practitioner)
  */
-export const cancelPractitionerSession = async (
+const cancelPractitionerSession = async (
     practitionerId,
     sessionId
 ) => {
@@ -238,7 +239,7 @@ export const cancelPractitionerSession = async (
             { session: sessionId, status: "confirmed" },
             { $set: { status: "cancelled" } },
             { new: true }
-        ).populate("user", "username email bio");
+        ).populate("user", "name username email bio");
     }
 
     return {
@@ -255,12 +256,16 @@ export const cancelPractitionerSession = async (
 /**
  * Get all approved, verified practitioners for discovery
  */
-export const getVerifiedPractitioners = async (filters = {}) => {
+const getVerifiedPractitioners = async (filters = {}) => {
     const { search, specialization } = filters;
 
     const query = {
         role: "practitioner",
-        $or: [{ approvalStatus: "approved" }, { isApproved: true }],
+        $or: [
+            { approvalStatus: "approved" },
+            { verificationStatus: "approved" },
+            { isApproved: true },
+        ],
     };
 
     if (specialization) {
@@ -272,6 +277,7 @@ export const getVerifiedPractitioners = async (filters = {}) => {
         query.$and = [
             {
                 $or: [
+                    { name: regex },
                     { username: regex },
                     { email: regex },
                     { bio: regex },
@@ -319,7 +325,7 @@ export const getVerifiedPractitioners = async (filters = {}) => {
 /**
  * Get practitioner profile and upcoming available sessions
  */
-export const getPractitionerProfile = async (practitionerId) => {
+const getPractitionerProfile = async (practitionerId) => {
     const practitioner = await verifyPractitionerApproval(practitionerId);
 
     const now = new Date();
@@ -341,7 +347,7 @@ export const getPractitionerProfile = async (practitionerId) => {
 /**
  * Get available sessions with optional date and specialization filtering
  */
-export const getAvailableSessions = async (filters = {}) => {
+const getAvailableSessions = async (filters = {}) => {
     const { practitionerId, specialization, date } = filters;
 
     const now = new Date();
@@ -371,7 +377,7 @@ export const getAvailableSessions = async (filters = {}) => {
     }
 
     const sessions = await TherapySession.find(query)
-        .populate("practitioner", "username email specialization bio")
+        .populate("practitioner", "name username email specialization bio")
         .sort({ startAt: 1 });
 
     return sessions;
@@ -380,10 +386,10 @@ export const getAvailableSessions = async (filters = {}) => {
 /**
  * Get single session by ID
  */
-export const getSessionById = async (sessionId, requestingUser) => {
+const getSessionById = async (sessionId, requestingUser) => {
     const session = await TherapySession.findById(sessionId).populate(
         "practitioner",
-        "username email specialization bio isApproved approvalStatus"
+        "name username email specialization bio isApproved approvalStatus verificationStatus"
     );
 
     if (!session) {
@@ -395,7 +401,7 @@ export const getSessionById = async (sessionId, requestingUser) => {
     // If session has an associated booking (confirmed or cancelled), provide booking context to authorized users
     const booking = await Booking.findOne({
         session: sessionId,
-    }).populate("user", "username email bio");
+    }).populate("user", "name username email bio");
 
     if (booking) {
         const isOwnerPractitioner =
@@ -421,7 +427,7 @@ export const getSessionById = async (sessionId, requestingUser) => {
 /**
  * Book a therapy session with ATOMIC concurrency lock
  */
-export const bookTherapySession = async (
+const bookTherapySession = async (
     userId,
     sessionId,
     bookingData = {}
@@ -471,7 +477,6 @@ export const bookTherapySession = async (
     }
 
     // Step 2: ATOMIC LOCK VIA findOneAndUpdate
-    // Guarantees only ONE booking succeeds even if multiple concurrent requests hit simultaneously
     const lockedSession = await TherapySession.findOneAndUpdate(
         {
             _id: sessionId,
@@ -504,7 +509,7 @@ export const bookTherapySession = async (
             bookingNotes: bookingNotes.trim(),
         });
 
-        await booking.populate("practitioner", "username email specialization");
+        await booking.populate("practitioner", "name username email specialization");
         await booking.populate("session");
 
         return {
@@ -528,7 +533,7 @@ export const bookTherapySession = async (
 /**
  * Get all bookings for a user
  */
-export const getUserBookings = async (userId, filters = {}) => {
+const getUserBookings = async (userId, filters = {}) => {
     const { status } = filters;
 
     const query = { user: userId };
@@ -541,10 +546,10 @@ export const getUserBookings = async (userId, filters = {}) => {
             path: "session",
             populate: {
                 path: "practitioner",
-                select: "username email specialization bio",
+                select: "name username email specialization bio",
             },
         })
-        .populate("practitioner", "username email specialization bio")
+        .populate("practitioner", "name username email specialization bio")
         .sort({ createdAt: -1 });
 
     return bookings;
@@ -553,7 +558,7 @@ export const getUserBookings = async (userId, filters = {}) => {
 /**
  * Cancel a user booking
  */
-export const cancelUserBooking = async (userId, bookingId) => {
+const cancelUserBooking = async (userId, bookingId) => {
     const booking = await Booking.findOne({
         _id: bookingId,
         user: userId,
@@ -584,7 +589,7 @@ export const cancelUserBooking = async (userId, bookingId) => {
 /**
  * Get summary dashboard metrics and upcoming items for user
  */
-export const getUserDashboardMetrics = async (userId) => {
+const getUserDashboardMetrics = async (userId) => {
     const now = new Date();
 
     const upcomingBookings = await Booking.find({
@@ -596,10 +601,10 @@ export const getUserDashboardMetrics = async (userId) => {
             match: { startAt: { $gt: now } },
             populate: {
                 path: "practitioner",
-                select: "username email specialization bio",
+                select: "name username email specialization bio",
             },
         })
-        .populate("practitioner", "username email specialization bio")
+        .populate("practitioner", "name username email specialization bio")
         .sort({ createdAt: -1 })
         .limit(5);
 
@@ -609,7 +614,11 @@ export const getUserDashboardMetrics = async (userId) => {
     const totalBookingsCount = await Booking.countDocuments({ user: userId });
     const verifiedPractitionersCount = await User.countDocuments({
         role: "practitioner",
-        $or: [{ approvalStatus: "approved" }, { isApproved: true }],
+        $or: [
+            { approvalStatus: "approved" },
+            { verificationStatus: "approved" },
+            { isApproved: true },
+        ],
     });
 
     return {
@@ -617,4 +626,19 @@ export const getUserDashboardMetrics = async (userId) => {
         totalBookingsCount,
         verifiedPractitionersCount,
     };
+};
+
+module.exports = {
+    createPractitionerSession,
+    getPractitionerSessions,
+    getPractitionerBookings,
+    cancelPractitionerSession,
+    getVerifiedPractitioners,
+    getPractitionerProfile,
+    getAvailableSessions,
+    getSessionById,
+    bookTherapySession,
+    getUserBookings,
+    cancelUserBooking,
+    getUserDashboardMetrics,
 };

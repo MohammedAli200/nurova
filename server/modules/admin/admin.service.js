@@ -1,9 +1,11 @@
-import User from "../../models/User.js";
+const User = require("../../models/user");
+const Practitioner = require("../../models/practitioner");
+const PractitionerDocument = require("../../models/practitionerdocument");
 
 /**
  * Dashboard statistics
  */
-export const getDashboardStats = async () => {
+const getDashboardStats = async () => {
     const [
         totalUsers,
         totalPractitioners,
@@ -21,17 +23,27 @@ export const getDashboardStats = async () => {
 
         User.countDocuments({
             role: "practitioner",
-            approvalStatus: "pending",
+            $or: [
+                { approvalStatus: "pending" },
+                { verificationStatus: "pending" },
+            ],
         }),
 
         User.countDocuments({
             role: "practitioner",
-            approvalStatus: "approved",
+            $or: [
+                { approvalStatus: "approved" },
+                { verificationStatus: "approved" },
+                { isApproved: true },
+            ],
         }),
 
         User.countDocuments({
             role: "practitioner",
-            approvalStatus: "rejected",
+            $or: [
+                { approvalStatus: "rejected" },
+                { verificationStatus: "rejected" },
+            ],
         }),
     ]);
 
@@ -47,7 +59,7 @@ export const getDashboardStats = async () => {
 /**
  * Get all practitioners
  */
-export const getAllPractitioners = async ({
+const getAllPractitioners = async ({
     status,
     specialization,
     search,
@@ -57,7 +69,23 @@ export const getAllPractitioners = async ({
     };
 
     if (status) {
-        filter.approvalStatus = status;
+        if (status === "pending") {
+            filter.$or = [
+                { approvalStatus: "pending" },
+                { verificationStatus: "pending" },
+            ];
+        } else if (status === "approved" || status === "verified") {
+            filter.$or = [
+                { approvalStatus: "approved" },
+                { verificationStatus: "approved" },
+                { isApproved: true },
+            ];
+        } else if (status === "rejected") {
+            filter.$or = [
+                { approvalStatus: "rejected" },
+                { verificationStatus: "rejected" },
+            ];
+        }
     }
 
     if (specialization) {
@@ -68,6 +96,12 @@ export const getAllPractitioners = async ({
         filter.$or = [
             {
                 email: {
+                    $regex: search,
+                    $options: "i",
+                },
+            },
+            {
+                name: {
                     $regex: search,
                     $options: "i",
                 },
@@ -99,18 +133,18 @@ export const getAllPractitioners = async ({
 /**
  * Get one practitioner
  */
-export const getPractitionerById = async (
-    practitionerId
-) => {
-    const practitioner = await User.findOne({
+const getPractitionerById = async (practitionerId) => {
+    let practitioner = await User.findOne({
         _id: practitionerId,
         role: "practitioner",
     }).select("-password");
 
     if (!practitioner) {
-        throw new Error(
-            "Practitioner not found."
-        );
+        practitioner = await Practitioner.findById(practitionerId).select("-password");
+    }
+
+    if (!practitioner) {
+        throw new Error("Practitioner not found.");
     }
 
     return practitioner;
@@ -119,37 +153,38 @@ export const getPractitionerById = async (
 /**
  * Approve practitioner
  */
-export const approvePractitioner = async (
-    practitionerId
-) => {
-    const practitioner = await User.findOne({
+const approvePractitioner = async (practitionerId) => {
+    let practitioner = await User.findOne({
         _id: practitionerId,
         role: "practitioner",
     });
 
-    if (!practitioner) {
-        throw new Error(
-            "Practitioner not found."
-        );
+    if (practitioner) {
+        practitioner.approvalStatus = "approved";
+        practitioner.verificationStatus = "approved";
+        practitioner.isApproved = true;
+        await practitioner.save();
+    } else {
+        practitioner = await Practitioner.findById(practitionerId);
+        if (practitioner) {
+            practitioner.verificationStatus = "approved";
+            practitioner.isActive = true;
+            await practitioner.save();
+        }
     }
 
-    practitioner.approvalStatus = "approved";
-    practitioner.isApproved = true;
-
-    await practitioner.save();
+    if (!practitioner) {
+        throw new Error("Practitioner not found.");
+    }
 
     return {
-        message:
-            "Practitioner approved successfully.",
+        message: "Practitioner approved successfully.",
         practitioner: {
             id: practitioner._id,
             email: practitioner.email,
-            specialization:
-                practitioner.specialization,
-            approvalStatus:
-                practitioner.approvalStatus,
-            isApproved:
-                practitioner.isApproved,
+            specialization: practitioner.specialization,
+            approvalStatus: practitioner.approvalStatus || "approved",
+            isApproved: true,
         },
     };
 };
@@ -157,37 +192,38 @@ export const approvePractitioner = async (
 /**
  * Reject practitioner
  */
-export const rejectPractitioner = async (
-    practitionerId
-) => {
-    const practitioner = await User.findOne({
+const rejectPractitioner = async (practitionerId) => {
+    let practitioner = await User.findOne({
         _id: practitionerId,
         role: "practitioner",
     });
 
-    if (!practitioner) {
-        throw new Error(
-            "Practitioner not found."
-        );
+    if (practitioner) {
+        practitioner.approvalStatus = "rejected";
+        practitioner.verificationStatus = "rejected";
+        practitioner.isApproved = false;
+        await practitioner.save();
+    } else {
+        practitioner = await Practitioner.findById(practitionerId);
+        if (practitioner) {
+            practitioner.verificationStatus = "rejected";
+            practitioner.isActive = false;
+            await practitioner.save();
+        }
     }
 
-    practitioner.approvalStatus = "rejected";
-    practitioner.isApproved = false;
-
-    await practitioner.save();
+    if (!practitioner) {
+        throw new Error("Practitioner not found.");
+    }
 
     return {
-        message:
-            "Practitioner rejected successfully.",
+        message: "Practitioner rejected successfully.",
         practitioner: {
             id: practitioner._id,
             email: practitioner.email,
-            specialization:
-                practitioner.specialization,
-            approvalStatus:
-                practitioner.approvalStatus,
-            isApproved:
-                practitioner.isApproved,
+            specialization: practitioner.specialization,
+            approvalStatus: practitioner.approvalStatus || "rejected",
+            isApproved: false,
         },
     };
 };
@@ -195,9 +231,7 @@ export const rejectPractitioner = async (
 /**
  * Get all normal users
  */
-export const getAllUsers = async ({
-    search,
-}) => {
+const getAllUsers = async ({ search }) => {
     const filter = {
         role: "user",
     };
@@ -217,6 +251,12 @@ export const getAllUsers = async ({
                 },
             },
             {
+                name: {
+                    $regex: search,
+                    $options: "i",
+                },
+            },
+            {
                 bio: {
                     $regex: search,
                     $options: "i",
@@ -230,4 +270,13 @@ export const getAllUsers = async ({
         .sort({
             createdAt: -1,
         });
+};
+
+module.exports = {
+    getDashboardStats,
+    getAllPractitioners,
+    getPractitionerById,
+    approvePractitioner,
+    rejectPractitioner,
+    getAllUsers,
 };

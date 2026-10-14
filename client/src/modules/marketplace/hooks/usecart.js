@@ -227,9 +227,20 @@ export function useCart() {
         console.log("Shipping info:", shippingInfo);
 
         // Get/create user ID required by your backend
-        const userId = getOrCreateUserId();
+        let userId = getOrCreateUserId();
+        try {
+          const userStr = localStorage.getItem("user");
+          if (userStr) {
+            const u = JSON.parse(userStr);
+            if (u?._id || u?.id) {
+              userId = u._id || u.id;
+            }
+          }
+        } catch (e) {
+          // ignore error
+        }
 
-        console.log("User ID:", userId);
+        console.log("User ID for order:", userId);
 
         /*
          * Your backend order schema is:

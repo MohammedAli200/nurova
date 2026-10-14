@@ -11,61 +11,81 @@ const {
   verifyDocument,
 } = require("../modules/auth/admincontroller");
 
+const {
+  dashboard,
+  practitioners,
+  practitionerDetails,
+  approve,
+  reject,
+  users,
+} = require("../modules/admin/admin.controller");
+
 const router = express.Router();
 
 /*
  * Admin Login
  * POST /api/admin/login
- *
- * Admin does not need a JWT before logging in.
  */
-router.post(
-  "/login",
-  adminLogin
-);
+router.post("/login", adminLogin);
 
 /*
- * Get all pending practitioners
+ * Admin Protected Routes
+ */
+router.use(authMiddleware);
+router.use(roleMiddleware("admin"));
+
+/*
+ * Dashboard Stats
+ * GET /api/admin/dashboard
+ */
+router.get("/dashboard", dashboard);
+
+/*
+ * Practitioners Listing
+ * GET /api/admin/practitioners
+ */
+router.get("/practitioners", practitioners);
+
+/*
+ * Legacy / alternative route for pending practitioners
  * GET /api/admin/practitioners/pending
  */
-router.get(
-  "/practitioners/pending",
-  authMiddleware,
-  roleMiddleware("admin"),
-  getPendingPractitionersController
-);
+router.get("/practitioners/pending", getPendingPractitionersController);
 
 /*
- * Get practitioner details and documents
- * GET /api/admin/practitioners/:practitionerId
+ * Practitioner Details
+ * GET /api/admin/practitioners/:id
  */
-router.get(
-  "/practitioners/:practitionerId",
-  authMiddleware,
-  roleMiddleware("admin"),
-  getPractitionerForVerificationController
-);
+router.get("/practitioners/:id", practitionerDetails);
 
 /*
- * Approve / Reject practitioner
+ * Approve Practitioner
+ * PATCH /api/admin/practitioners/:id/approve
+ */
+router.patch("/practitioners/:id/approve", approve);
+
+/*
+ * Reject Practitioner
+ * PATCH /api/admin/practitioners/:id/reject
+ */
+router.patch("/practitioners/:id/reject", reject);
+
+/*
+ * Verify Practitioner (Status in Body)
  * PATCH /api/admin/practitioners/:practitionerId/verify
  */
-router.patch(
-  "/practitioners/:practitionerId/verify",
-  authMiddleware,
-  roleMiddleware("admin"),
-  verifyPractitioner
-);
+router.patch("/practitioners/:practitionerId/verify", verifyPractitioner);
 
 /*
- * Approve / Reject individual document
+ * Verify Document
  * PATCH /api/admin/documents/:documentId/verify
  */
-router.patch(
-  "/documents/:documentId/verify",
-  authMiddleware,
-  roleMiddleware("admin"),
-  verifyDocument
-);
+router.patch("/documents/:documentId/verify", verifyDocument);
+
+/*
+ * Users Listing
+ * GET /api/admin/users
+ */
+router.get("/users", users);
 
 module.exports = router;

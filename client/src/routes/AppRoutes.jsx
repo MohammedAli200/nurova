@@ -9,6 +9,8 @@ import LoginPage from "../modules/auth/pages/LoginPage";
 import RegisterPage from "../modules/auth/pages/RegisterPage";
 import ProfilePage from "../modules/auth/pages/ProfilePage";
 import MarketplacePage from "../modules/marketplace/pages/MarketplacePage";
+import CommunityPage from "../modules/community/pages/CommunityPage";
+import QuestionDetailPage from "../modules/community/pages/QuestionDetailPage";
 
 import PractitionerDashboard from "../modules/practitioner/pages/PractitionerDashboard";
 import PractitionerBookingsPage from "../modules/practitioner/pages/PractitionerBookingsPage";
@@ -49,33 +51,50 @@ const AppRoutes = () => {
                 <Route path="/register" element={<RegisterPage />} />
 
                 {/* =========================
+                    SHARED / PUBLIC EXPLORE ROUTES
+                ========================= */}
+                <Route
+                    path="/marketplace"
+                    element={<MarketplacePage />}
+                />
+
+                <Route
+                    path="/community"
+                    element={<CommunityPage />}
+                />
+
+                <Route
+                    path="/community/:id"
+                    element={<QuestionDetailPage />}
+                />
+
+                <Route
+                    path="/practitioners"
+                    element={<PractitionerDiscovery />}
+                />
+
+                <Route
+                    path="/practitioners/:id"
+                    element={<PractitionerProfileView />}
+                />
+
+                {/* =========================
                     PROTECTED USER ROUTES
                 ========================= */}
                 <Route element={<ProtectedRoute />}>
-                    {/* Module A / shared profile */}
+                    {/* Shared profile */}
                     <Route
                         path="/profile"
                         element={<ProfilePage />}
                     />
 
-                    {/* Module B - User Dashboard */}
+                    {/* User Dashboard */}
                     <Route
                         path="/dashboard"
                         element={<UserDashboard />}
                     />
 
-                    {/* Module B - Practitioner Discovery */}
-                    <Route
-                        path="/practitioners"
-                        element={<PractitionerDiscovery />}
-                    />
-
-                    <Route
-                        path="/practitioners/:id"
-                        element={<PractitionerProfileView />}
-                    />
-
-                    {/* Module B - Sessions & Booking */}
+                    {/* Sessions & Booking */}
                     <Route
                         path="/sessions/:id"
                         element={<SessionDetailPage />}
@@ -90,17 +109,13 @@ const AppRoutes = () => {
                         path="/my-bookings"
                         element={<MyBookingsPage />}
                     />
-                    <Route
-                     path="/marketplace"
-                   element={<MarketplacePage />}
-                      />
 
                     {/* =====================
                         PRACTITIONER PORTAL
                     ===================== */}
                     <Route
                         element={
-                            <RoleRoute roles={["practitioner"]} />
+                            <RoleRoute roles={["practitioner", "admin"]} />
                         }
                     >
                         <Route
@@ -112,11 +127,12 @@ const AppRoutes = () => {
                             path="/practitioner/bookings"
                             element={<PractitionerBookingsPage />}
                         />
-                   </Route>
+
                         <Route
                             path="/practitioner/products"
                             element={<PractitionerProductsPage />}
-                         />
+                        />
+                    </Route>
                 </Route>
 
                 {/* =========================

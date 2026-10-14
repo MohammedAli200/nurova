@@ -1,18 +1,22 @@
-import User from "../models/User.js";
+require("dotenv").config();
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const User = require("../models/user");
+const connectDB = require("../config/db");
 
-export const seedAdmin = async () => {
+const seedAdmin = async () => {
     try {
         const email =
-            process.env.ADMIN_EMAIL?.trim().toLowerCase();
+            process.env.ADMIN_EMAIL?.trim().toLowerCase() || "nurova@admin.com";
 
-        const password =
-            process.env.ADMIN_PASSWORD;
+        const rawPassword =
+            process.env.ADMIN_PASSWORD || "nurova123";
 
         const username =
             process.env.ADMIN_USER_NAME?.trim() ||
             "adminnurova";
 
-        if (!email || !password) {
+        if (!email || !rawPassword) {
             console.log(
                 "Admin credentials are not configured."
             );
@@ -21,25 +25,30 @@ export const seedAdmin = async () => {
 
         const existingAdmin =
             await User.findOne({
-                email,
-            }).select("+password");
+                $or: [{ email }, { username }],
+            });
 
         if (existingAdmin) {
             console.log(
                 "Admin account already exists:",
-                email
+                existingAdmin.email
             );
             return;
         }
 
+        const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
         const admin = await User.create({
+            name: "Administrator",
             email,
             username,
-            password,
+            password: hashedPassword,
             bio: "Nurova Administrator",
             role: "admin",
             isApproved: true,
             approvalStatus: "approved",
+            verificationStatus: "approved",
+            isActive: true,
         });
 
         console.log(
@@ -54,3 +63,15 @@ export const seedAdmin = async () => {
         );
     }
 };
+
+// If run directly: node utils/seedAdmin.js
+if (require.main === module) {
+    (async () => {
+        await connectDB();
+        await seedAdmin();
+        await mongoose.connection.close();
+        process.exit(0);
+    })();
+}
+
+module.exports = { seedAdmin };

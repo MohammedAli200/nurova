@@ -1,13 +1,13 @@
-import * as bookingService from "./booking.service.js";
+const bookingService = require("./booking.service");
 
 /* =========================================================================
    PRACTITIONER CONTROLLERS
    ========================================================================= */
 
-export const createSession = async (req, res) => {
+const createSession = async (req, res) => {
     try {
         const session = await bookingService.createPractitionerSession(
-            req.user._id,
+            req.user._id || req.user.id,
             req.body
         );
 
@@ -18,16 +18,17 @@ export const createSession = async (req, res) => {
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
                 error.message || "Failed to create therapy session.",
         });
     }
 };
 
-export const getPractitionerSessions = async (req, res) => {
+const getPractitionerSessions = async (req, res) => {
     try {
         const sessions = await bookingService.getPractitionerSessions(
-            req.user._id,
+            req.user._id || req.user.id,
             req.query
         );
 
@@ -37,16 +38,17 @@ export const getPractitionerSessions = async (req, res) => {
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
                 error.message || "Failed to retrieve practitioner sessions.",
         });
     }
 };
 
-export const getPractitionerBookings = async (req, res) => {
+const getPractitionerBookings = async (req, res) => {
     try {
         const bookings = await bookingService.getPractitionerBookings(
-            req.user._id,
+            req.user._id || req.user.id,
             req.query
         );
 
@@ -56,26 +58,31 @@ export const getPractitionerBookings = async (req, res) => {
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
                 error.message || "Failed to retrieve practitioner bookings.",
         });
     }
 };
 
-export const cancelPractitionerSession = async (req, res) => {
+const cancelPractitionerSession = async (req, res) => {
     try {
-        const session = await bookingService.cancelPractitionerSession(
-            req.user._id,
+        const result = await bookingService.cancelPractitionerSession(
+            req.user._id || req.user.id,
             req.params.id
         );
 
         res.status(200).json({
             success: true,
-            message: "Therapy session cancelled successfully.",
-            session,
+            message: result.wasBooked
+                ? "Therapy session cancelled. Client booking marked as cancelled."
+                : "Therapy session cancelled successfully.",
+            session: result.session,
+            affectedBooking: result.affectedBooking,
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
                 error.message || "Failed to cancel therapy session.",
         });
@@ -86,11 +93,10 @@ export const cancelPractitionerSession = async (req, res) => {
    USER DISCOVERY & BOOKING CONTROLLERS
    ========================================================================= */
 
-export const getVerifiedPractitioners = async (req, res) => {
+const getVerifiedPractitioners = async (req, res) => {
     try {
-        const practitioners = await bookingService.getVerifiedPractitioners(
-            req.query
-        );
+        const practitioners =
+            await bookingService.getVerifiedPractitioners(req.query);
 
         res.status(200).json({
             success: true,
@@ -98,31 +104,33 @@ export const getVerifiedPractitioners = async (req, res) => {
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
-                error.message || "Failed to retrieve verified practitioners.",
+                error.message || "Failed to retrieve practitioners list.",
         });
     }
 };
 
-export const getPractitionerProfile = async (req, res) => {
+const getPractitionerProfile = async (req, res) => {
     try {
-        const data = await bookingService.getPractitionerProfile(
+        const profile = await bookingService.getPractitionerProfile(
             req.params.id
         );
 
         res.status(200).json({
             success: true,
-            ...data,
+            ...profile,
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
                 error.message || "Failed to retrieve practitioner profile.",
         });
     }
 };
 
-export const getAvailableSessions = async (req, res) => {
+const getAvailableSessions = async (req, res) => {
     try {
         const sessions = await bookingService.getAvailableSessions(req.query);
 
@@ -132,13 +140,14 @@ export const getAvailableSessions = async (req, res) => {
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
                 error.message || "Failed to retrieve available sessions.",
         });
     }
 };
 
-export const getSessionById = async (req, res) => {
+const getSessionById = async (req, res) => {
     try {
         const session = await bookingService.getSessionById(
             req.params.id,
@@ -151,38 +160,40 @@ export const getSessionById = async (req, res) => {
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
-                error.message || "Failed to retrieve therapy session.",
+                error.message || "Failed to retrieve session details.",
         });
     }
 };
 
-export const bookSession = async (req, res) => {
+const bookSession = async (req, res) => {
     try {
         const result = await bookingService.bookTherapySession(
-            req.user._id,
+            req.user._id || req.user.id,
             req.params.id,
             req.body
         );
 
         res.status(201).json({
             success: true,
-            message: "Your therapy session has been confirmed.",
+            message: "Therapy session booked successfully!",
             booking: result.booking,
             session: result.session,
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
-                error.message || "Unable to confirm booking.",
+                error.message || "Failed to complete session booking.",
         });
     }
 };
 
-export const getUserBookings = async (req, res) => {
+const getUserBookings = async (req, res) => {
     try {
         const bookings = await bookingService.getUserBookings(
-            req.user._id,
+            req.user._id || req.user.id,
             req.query
         );
 
@@ -192,36 +203,38 @@ export const getUserBookings = async (req, res) => {
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
-                error.message || "Failed to retrieve user bookings.",
+                error.message || "Failed to retrieve bookings.",
         });
     }
 };
 
-export const cancelUserBooking = async (req, res) => {
+const cancelUserBooking = async (req, res) => {
     try {
         const booking = await bookingService.cancelUserBooking(
-            req.user._id,
+            req.user._id || req.user.id,
             req.params.id
         );
 
         res.status(200).json({
             success: true,
-            message: "Booking cancelled successfully.",
+            message: "Booking cancelled successfully. Slot has been freed.",
             booking,
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
                 error.message || "Failed to cancel booking.",
         });
     }
 };
 
-export const getUserDashboardMetrics = async (req, res) => {
+const getUserDashboardMetrics = async (req, res) => {
     try {
         const metrics = await bookingService.getUserDashboardMetrics(
-            req.user._id
+            req.user._id || req.user.id
         );
 
         res.status(200).json({
@@ -230,8 +243,24 @@ export const getUserDashboardMetrics = async (req, res) => {
         });
     } catch (error) {
         res.status(error.status || 500).json({
+            success: false,
             message:
                 error.message || "Failed to retrieve dashboard metrics.",
         });
     }
+};
+
+module.exports = {
+    createSession,
+    getPractitionerSessions,
+    getPractitionerBookings,
+    cancelPractitionerSession,
+    getVerifiedPractitioners,
+    getPractitionerProfile,
+    getAvailableSessions,
+    getSessionById,
+    bookSession,
+    getUserBookings,
+    cancelUserBooking,
+    getUserDashboardMetrics,
 };

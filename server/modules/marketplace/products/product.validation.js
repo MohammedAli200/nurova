@@ -1,24 +1,40 @@
 const validateProduct = (product) => {
   const { name, description, price, category, stock } = product;
 
-  if (!name || !description || !category) {
+  if (!name || !name.trim()) {
     return {
       valid: false,
-      message: "Name, description, and category are required",
+      message: "Product name is required",
     };
   }
 
-  if (price === undefined || price < 0) {
+  if (!description || !description.trim()) {
     return {
       valid: false,
-      message: "Price must be a valid positive number",
+      message: "Product description is required",
     };
   }
 
-  if (stock === undefined || stock < 0) {
+  if (!category || !category.trim()) {
     return {
       valid: false,
-      message: "Stock must be a valid positive number",
+      message: "Category is required",
+    };
+  }
+
+  const numPrice = Number(price);
+  if (price === undefined || price === null || isNaN(numPrice) || numPrice < 0) {
+    return {
+      valid: false,
+      message: "Price must be a valid non-negative number",
+    };
+  }
+
+  const numStock = Number(stock);
+  if (stock === undefined || stock === null || isNaN(numStock) || numStock < 0) {
+    return {
+      valid: false,
+      message: "Stock must be a valid non-negative integer",
     };
   }
 

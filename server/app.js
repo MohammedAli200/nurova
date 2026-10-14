@@ -5,6 +5,12 @@ const path = require("path");
 const authRoutes = require("./routes/authroutes");
 const practitionerRoutes = require("./routes/practitionerroutes");
 const adminRoutes = require("./routes/adminroutes");
+const bookingRoutes = require("./modules/booking/booking.routes");
+const productRoutes = require("./modules/marketplace/products/product.routes");
+const practitionerProductRoutes = require("./modules/marketplace/products/practitioner.product.routes");
+const orderRoutes = require("./modules/marketplace/orders/order.routes");
+const cartRoutes = require("./modules/marketplace/cart/cart.routes");
+const communityRoutes = require("./modules/community/community.routes");
 
 const errorMiddleware = require("./middleware/errormiddleware");
 
@@ -30,11 +36,8 @@ app.use(express.urlencoded({ extended: true }));
 
 /*
  * ----------------------------------------------------
- * Uploaded Documents
+ * Uploaded Documents & Media
  * ----------------------------------------------------
- *
- * Allows uploaded practitioner documents to be accessed
- * through /uploads/...
  */
 
 app.use(
@@ -62,10 +65,14 @@ app.get("/", (req, res) => {
  */
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/practitioners", practitionerRoutes);
-
 app.use("/api/admin", adminRoutes);
+app.use("/api/booking", bookingRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/practitioner/products", practitionerProductRoutes);
+app.use("/api/community", communityRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/cart", cartRoutes);
 
 /*
  * ----------------------------------------------------

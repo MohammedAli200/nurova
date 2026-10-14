@@ -56,15 +56,59 @@ const createProduct = async (req, res) => {
       });
     }
 
-  const product = await productService.createProduct(
-  {
-    ...req.body,
-    ...(req.file && {
-      image: `/uploads/${req.file.filename}`,
-    }),
-  },
-  req.user.id
-);
+    let ingredients = [];
+    if (req.body.ingredients) {
+      if (Array.isArray(req.body.ingredients)) {
+        ingredients = req.body.ingredients;
+      } else if (typeof req.body.ingredients === "string") {
+        ingredients = req.body.ingredients
+          .split(",")
+          .map((i) => i.trim())
+          .filter(Boolean);
+      }
+    }
+
+    let benefits = [];
+    if (req.body.benefits) {
+      if (Array.isArray(req.body.benefits)) {
+        benefits = req.body.benefits;
+      } else if (typeof req.body.benefits === "string") {
+        benefits = req.body.benefits
+          .split(",")
+          .map((b) => b.trim())
+          .filter(Boolean);
+      }
+    }
+
+    const price = Number(req.body.price);
+    const stock = Number(req.body.stock) || 0;
+    const inStock = req.body.inStock !== undefined 
+      ? req.body.inStock === "true" || req.body.inStock === true
+      : stock > 0;
+
+    const productPayload = {
+      name: req.body.name.trim(),
+      shortDescription: (req.body.shortDescription || "").trim(),
+      description: req.body.description.trim(),
+      price,
+      category: req.body.category.trim(),
+      stock,
+      inStock,
+      brand: (req.body.brand || "").trim(),
+      specifications: (req.body.specifications || "").trim(),
+      usageInstructions: (req.body.usageInstructions || "").trim(),
+      ingredients,
+      benefits,
+      ...(req.file && {
+        image: `/uploads/${req.file.filename}`,
+      }),
+      ...(!req.file && req.body.image && typeof req.body.image === "string" && {
+        image: req.body.image.trim(),
+      }),
+    };
+
+    const product = await productService.createProduct(productPayload, req.user.id);
+
     res.status(201).json({
       success: true,
       message: "Product created successfully",
@@ -91,20 +135,69 @@ const updateProduct = async (req, res) => {
       });
     }
 
-   const product = await productService.updateProduct(
-  req.params.id,
-  req.user.id,
-  {
-    ...req.body,
-    ...(req.file && {
-      image: `/uploads/${req.file.filename}`,
-    }),
-  }
-);
+    let ingredients = undefined;
+    if (req.body.ingredients !== undefined) {
+      if (Array.isArray(req.body.ingredients)) {
+        ingredients = req.body.ingredients;
+      } else if (typeof req.body.ingredients === "string") {
+        ingredients = req.body.ingredients
+          .split(",")
+          .map((i) => i.trim())
+          .filter(Boolean);
+      }
+    }
+
+    let benefits = undefined;
+    if (req.body.benefits !== undefined) {
+      if (Array.isArray(req.body.benefits)) {
+        benefits = req.body.benefits;
+      } else if (typeof req.body.benefits === "string") {
+        benefits = req.body.benefits
+          .split(",")
+          .map((b) => b.trim())
+          .filter(Boolean);
+      }
+    }
+
+    const price = Number(req.body.price);
+    const stock = Number(req.body.stock);
+    const inStock = req.body.inStock !== undefined 
+      ? req.body.inStock === "true" || req.body.inStock === true
+      : stock > 0;
+
+    const updatePayload = {
+      name: req.body.name.trim(),
+      shortDescription: (req.body.shortDescription || "").trim(),
+      description: req.body.description.trim(),
+      price,
+      category: req.body.category.trim(),
+      stock,
+      inStock,
+      brand: (req.body.brand || "").trim(),
+      specifications: (req.body.specifications || "").trim(),
+      usageInstructions: (req.body.usageInstructions || "").trim(),
+      ...(ingredients !== undefined && { ingredients }),
+      ...(benefits !== undefined && { benefits }),
+      ...(req.file && {
+        image: `/uploads/${req.file.filename}`,
+      }),
+      ...(!req.file && req.body.image && typeof req.body.image === "string" && {
+        image: req.body.image.trim(),
+      }),
+    };
+
+    const isAdmin = req.user.role === "admin";
+    const product = await productService.updateProduct(
+      req.params.id,
+      req.user.id,
+      updatePayload,
+      isAdmin
+    );
+
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found or you do not own this product",
+        message: "Product not found or you do not have permission to edit this product",
       });
     }
 
@@ -125,15 +218,17 @@ const updateProduct = async (req, res) => {
 // DELETE /api/products/:id
 const deleteProduct = async (req, res) => {
   try {
+    const isAdmin = req.user.role === "admin";
     const product = await productService.deleteProduct(
       req.params.id,
-      req.user.id
+      req.user.id,
+      isAdmin
     );
 
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found or you do not own this product",
+        message: "Product not found or you do not have permission to delete this product",
       });
     }
 
@@ -142,21 +237,19 @@ const deleteProduct = async (req, res) => {
       message: "Product deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(error.statusCode || 500).json({
       success: false,
-      message: "Failed to delete product",
-      error: error.message,
+      message: error.message || "Failed to delete product",
     });
   }
 };
 
-// GET /api/practitioners/products
+// GET /api/products/my-products
 const getMyProducts = async (req, res) => {
   try {
-    const products =
-      await productService.getPractitionerProducts(
-        req.user.id
-      );
+    const products = await productService.getPractitionerProducts(
+      req.user.id
+    );
 
     res.status(200).json({
       success: true,

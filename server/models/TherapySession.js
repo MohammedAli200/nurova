@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const therapySessionSchema = new mongoose.Schema(
     {
@@ -86,4 +86,4 @@ const TherapySession =
     mongoose.models.TherapySession ||
     mongoose.model("TherapySession", therapySessionSchema);
 
-export default TherapySession;
+module.exports = TherapySession;

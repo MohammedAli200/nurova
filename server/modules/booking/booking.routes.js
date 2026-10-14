@@ -1,5 +1,5 @@
-import express from "express";
-import {
+const express = require("express");
+const {
     createSession,
     getPractitionerSessions,
     getPractitionerBookings,
@@ -12,15 +12,15 @@ import {
     getUserBookings,
     cancelUserBooking,
     getUserDashboardMetrics,
-} from "./booking.controller.js";
+} = require("./booking.controller");
 
-import { authenticate } from "../../middleware/authMiddleware.js";
-import { requireRole } from "../../middleware/roleMiddleware.js";
+const authMiddleware = require("../../middleware/authmiddleware");
+const roleMiddleware = require("../../middleware/rolemiddleware");
 
 const router = express.Router();
 
 // All booking & discovery endpoints require authentication
-router.use(authenticate);
+router.use(authMiddleware);
 
 /* =========================================================================
    USER DISCOVERY & BOOKING ROUTES
@@ -50,32 +50,32 @@ router.get("/dashboard-metrics", getUserDashboardMetrics);
 
 router.post(
     "/practitioner/sessions",
-    requireRole("practitioner"),
+    roleMiddleware("practitioner"),
     createSession
 );
 
 router.get(
     "/practitioner/sessions",
-    requireRole("practitioner"),
+    roleMiddleware("practitioner"),
     getPractitionerSessions
 );
 
 router.get(
     "/practitioner/bookings",
-    requireRole("practitioner"),
+    roleMiddleware("practitioner"),
     getPractitionerBookings
 );
 
 router.patch(
     "/practitioner/sessions/:id/cancel",
-    requireRole("practitioner"),
+    roleMiddleware("practitioner"),
     cancelPractitionerSession
 );
 
 router.patch(
     "/sessions/:id/cancel",
-    requireRole("practitioner"),
+    roleMiddleware("practitioner"),
     cancelPractitionerSession
 );
 
-export default router;
+module.exports = router;

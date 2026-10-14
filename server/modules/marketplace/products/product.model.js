@@ -4,7 +4,7 @@ const productSchema = new mongoose.Schema(
   {
     practitionerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Practitioner",
+      ref: "User",
       required: true,
       index: true,
     },
@@ -13,6 +13,12 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+    },
+
+    shortDescription: {
+      type: String,
+      trim: true,
+      default: "",
     },
 
     description: {
@@ -38,6 +44,24 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
       default: 0,
+    },
+
+    brand: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    specifications: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    usageInstructions: {
+      type: String,
+      trim: true,
+      default: "",
     },
 
     originalPrice: {
@@ -118,6 +142,6 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
 
 module.exports = Product;

@@ -18,7 +18,6 @@ const {
 } = require("./product.controller");
 
 // Public marketplace routes
-
 router.get("/", getAllProducts);
 
 // Practitioner product management
@@ -26,7 +25,7 @@ router.get("/", getAllProducts);
 router.get(
   "/my-products",
   authMiddleware,
-  roleMiddleware("practitioner"),
+  roleMiddleware("practitioner", "admin"),
   getMyProducts
 );
 
@@ -35,7 +34,7 @@ router.get("/:id", getProductById);
 router.post(
   "/",
   authMiddleware,
-  roleMiddleware("practitioner"),
+  roleMiddleware("practitioner", "admin"),
   uploadMiddleware.single("image"),
   createProduct
 );
@@ -43,7 +42,7 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
-  roleMiddleware("practitioner"),
+  roleMiddleware("practitioner", "admin"),
   uploadMiddleware.single("image"),
   updateProduct
 );
@@ -51,7 +50,7 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
-  roleMiddleware("practitioner"),
+  roleMiddleware("practitioner", "admin"),
   deleteProduct
 );
 

@@ -5,7 +5,7 @@ const Product = require("../products/product.model");
 const getCart = async (userId) => {
   const cart = await Cart.findOne({ userId }).populate(
     "items.productId",
-    "name price category stock"
+    "name price category stock image inStock shortDescription brand"
   );
 
   if (!cart) {
@@ -62,7 +62,7 @@ const addToCart = async (userId, productId, quantity) => {
 
   return await Cart.findById(cart._id).populate(
     "items.productId",
-    "name price category stock"
+    "name price category stock image inStock shortDescription brand"
   );
 };
 
@@ -98,7 +98,7 @@ const updateCartItem = async (userId, productId, quantity) => {
 
   return await Cart.findById(cart._id).populate(
     "items.productId",
-    "name price category stock"
+    "name price category stock image inStock shortDescription brand"
   );
 };
 
@@ -126,7 +126,7 @@ const removeFromCart = async (userId, productId) => {
 
   return await Cart.findById(cart._id).populate(
     "items.productId",
-    "name price category stock"
+    "name price category stock image inStock shortDescription brand"
   );
 };
 

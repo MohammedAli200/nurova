@@ -1523,42 +1523,39 @@ export const productsData = [
   }
 ];
 
-// Helper search & filter methods
+import api from "../../../services/api";
 
- export const getProducts = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/products`);
+export const getProducts = async () => {
+    const response = await api.get("/api/products");
+    const data = response.data?.data || [];
+    const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch products");
-    }
-
-    const result = await response.json();
-
-    return (result.data || []).map((product) => ({
+    return data.map((product) => ({
         ...product,
+        id: product._id || product.id,
         image: product.image
             ? product.image.startsWith("http")
                 ? product.image
-                : `${API_BASE_URL}${product.image}`
-            : product.image,
+                : `${apiBase}${product.image}`
+            : null,
     }));
 };
+
 export const getProductById = async (id) => {
-  const response = await fetch(
-    `${API_BASE_URL}/api/products/${id}`
-  );
+    const response = await api.get(`/api/products/${id}`);
+    const product = response.data?.data;
+    if (!product) return null;
+    const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
-  if (!response.ok) {
-    if (response.status === 404) {
-      return null;
-    }
-
-    throw new Error("Failed to fetch product");
-  }
-
-  const result = await response.json();
-
-  return result.data;
+    return {
+        ...product,
+        id: product._id || product.id,
+        image: product.image
+            ? product.image.startsWith("http")
+                ? product.image
+                : `${apiBase}${product.image}`
+            : null,
+    };
 };
 
 export const filterProducts = ({

@@ -4,7 +4,6 @@ const validateEmail = (email) => {
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
   return emailRegex.test(email.trim());
 };
 
@@ -16,11 +15,12 @@ const validatePassword = (password) => {
   return password.length >= 6;
 };
 
-const validateRegistration = ({ name, email, password }) => {
+const validateRegistration = ({ name, username, email, password }) => {
   const errors = {};
+  const displayName = name || username;
 
-  if (!name || typeof name !== "string" || !name.trim()) {
-    errors.name = "Name is required";
+  if (!displayName || typeof displayName !== "string" || !displayName.trim()) {
+    errors.name = "Name or username is required";
   }
 
   if (!validateEmail(email)) {
@@ -37,11 +37,12 @@ const validateRegistration = ({ name, email, password }) => {
   };
 };
 
-const validateLogin = ({ email, password }) => {
+const validateLogin = ({ email, username, password }) => {
   const errors = {};
+  const identifier = email || username;
 
-  if (!validateEmail(email)) {
-    errors.email = "A valid email is required";
+  if (!identifier || typeof identifier !== "string" || !identifier.trim()) {
+    errors.email = "A valid email or username is required";
   }
 
   if (!password || typeof password !== "string") {
